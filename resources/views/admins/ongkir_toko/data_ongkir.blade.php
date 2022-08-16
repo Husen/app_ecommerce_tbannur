@@ -1,0 +1,142 @@
+@extends('layouts/admin.base')
+
+@section('title', 'Kelola Ongkir Toko')
+
+@section('content')
+
+
+<!--begin: Datatable-->
+<table class="table table-separate table-head-custom table-checkable" id="kt_datatable">
+	<thead>
+		<tr>
+			<th>No</th>
+			<th>Untuk Kecamatan</th>
+			<th>Harga Ongkos Kirim</th>
+			<th>Aksi</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php $no=1; ?>
+  	@foreach($data as $ongkir)
+	    <tr>
+	      <th>{{ $no++ }}</th>
+	      <td>{{ $ongkir->nama_kecamatan }}</td>
+	      <td>Rp. {{ number_format($ongkir->harga_ongkir) }}</td>
+	      <td>
+			<a href="#" class="btn btn-warning ubah" data-toggle="modal" data-target="#ubahOngkir{{ $ongkir->id }}">Ubah</a>
+	      	<a href="#" class="btn btn-danger delete" data-toggle="modal" data-target="#hapusOngkir{{ $ongkir->id }}">Hapus</a>
+	      </td>
+	    </tr>
+    @endforeach
+	</tbody>
+</table>
+<!--end: Datatable-->
+
+<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-bs-target="#tambahProduk">Tambah</button> -->
+	<a href="#" class="btn btn-block btn-primary font-weight-bold text-uppercase py-4 px-6 text-center" data-toggle="modal" data-target="#tambah">Tambah</a>
+
+
+
+<!-- Modal -->
+<div class="modal modal-sticky modal-sticky-lg modal-sticky-bottom-center" id="tambah" role="dialog" data-backdrop="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tambahProduk">Tambah Data Kecamatan</h5>
+        <button class="btn btn-clean btn-sm btn-icon" data-dismiss="modal"><i class="ki ki-close icon-1x"></i></button>
+      </div>
+      <div class="modal-body">
+
+        <form action="{{ url('admin/tambah_ongkir') }}" method="POST" enctype="multipart/form-data">
+        	@csrf
+		    <div class="mb-3">
+		      <label class="form-label">Nama Kecamatan</label>
+		      <input type="text" name="nama_kecamatan" class="form-control" required>
+		    </div>
+
+		    <div class="mb-3">
+		      <label class="form-label">Harga Ongkir</label>
+		      <input type="number" name="harga_ongkir" class="form-control" required>
+		    </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-clean btn-secondary" data-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan</button>
+      </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+
+@foreach($data as $ongkir)
+<div class="modal modal-sticky modal-sticky-lg modal-sticky-bottom-center" id="ubahOngkir{{ $ongkir->id }}" role="dialog" data-backdrop="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ubah Data Kecamatan</h5>
+        <button class="btn btn-clean btn-sm btn-icon" data-dismiss="modal"><i class="ki ki-close icon-1x"></i></button>
+      </div>
+      <div class="modal-body">
+
+        <form action="{{ url('admin/update_ongkir') }}" method="POST" enctype="multipart/form-data">
+        	@csrf
+		    <input type="hidden" name="id" value="{{ $ongkir->id }}" class="form-control" required>
+		    <div class="mb-3">
+		      <label class="form-label">Nama Kecamatan</label>
+		      <input type="text" name="nama_kecamatan" value="{{ $ongkir->nama_kecamatan }}" class="form-control" required>
+		    </div>
+
+		    <div class="mb-3">
+		      <label class="form-label">Harga Ongkir</label>
+		      <input type="number" name="harga_ongkir" value="{{ $ongkir->harga_ongkir }}" class="form-control" required>
+		    </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-clean btn-secondary" data-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan</button>
+      </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+@endforeach
+
+
+@foreach($data as $ongkir)
+<div class="modal modal-sticky modal-sticky-lg modal-sticky-bottom-center" id="hapusOngkir{{ $ongkir->id }}" role="dialog" data-backdrop="false">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Hapus Data Kecamatan</h5>
+        <button class="btn btn-clean btn-sm btn-icon" data-dismiss="modal"><i class="ki ki-close icon-1x"></i></button>
+      </div>
+      <div class="modal-body">
+
+        <form action="{{ url('admin/hapus_ongkir') }}" method="POST" enctype="multipart/form-data">
+        	@csrf
+		    <input type="hidden" name="id" value="{{ $ongkir->id }}" class="form-control" required>
+		    <div class="mb-3">
+		    	<label>Yakin Hapus Data?</label>
+		    </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-clean btn-secondary" data-dismiss="modal">Batal</button>
+	    <button type="submit" class="btn btn-danger">Hapus</button>
+      </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+@endforeach
+
+
+@include('sweetalert::alert')
+
+@endsection
